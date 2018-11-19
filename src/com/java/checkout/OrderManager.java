@@ -4,12 +4,18 @@ import java.util.Date;
 
 public class OrderManager {
 
-    public static void main(String[] args) {
-        String customerID = "123ABC";
-        placeOrder(customerID, System.currentTimeMillis());
+    class EmailInfo {
+        public String primaryEmail;
+        public String secondaryEmail;
+        public EmailInfo(String primaryEmail, String secondaryEmail) {
+            super();
+            this.primaryEmail = primaryEmail;
+            this.secondaryEmail = secondaryEmail;
+        }
     }
-
-    private static void placeOrder(String customerID, long currentTimeMillis) {
+    
+    public void placeOrder(String customerID, long currentTimeMillis,
+            String itemID) {
         final CustomerInfo ci = getCustomerInfo(customerID);
         if (ci != null) {
             storeDBOrderRecord(ci);
@@ -18,19 +24,26 @@ public class OrderManager {
 
     }
 
-    private static boolean sendNotification(CustomerInfo ci) {
-        double coinflip = Math.random();
-        return coinflip >= 0.5? true: false;
+    private boolean sendNotification(CustomerInfo ci) {
+        EmailInfo email = getEmail(ci);
+        if (email.primaryEmail != null) {
+            return true; // send email
+        }
+        return false;
+     }
+
+    private EmailInfo getEmail(CustomerInfo ci) {
+        return new EmailInfo(null, "test@gmail.com");
     }
 
-    private static String storeDBOrderRecord(CustomerInfo ci) {
+    private String storeDBOrderRecord(CustomerInfo ci) {
         // store and return new order id
         return "order123";
     }
 
-    private static CustomerInfo getCustomerInfo(String customerID) {
+    private CustomerInfo getCustomerInfo(String customerID) {
         return new CustomerInfo("test-customer", "123 3rd ave, Seattle, 99109",
-                new Date(), "test-customer@gmail.com");
+                new Date());
     }
 
 }
